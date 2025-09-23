@@ -9,7 +9,7 @@ from scipy.interpolate import UnivariateSpline
 
 base_folder = r"C:\Users\AlexisGiroux\OneDrive - Laserax inc\Documents\GitHub\TPA---Team-4" 
 materiau = ["Rien", "Bois", "Carton", "Plexiglass", "Mousse"]
-folder_path = r"Rien"
+folder_path = r"Carton"
 ref_file = os.path.join(folder_path, "Ref.txt")
 
 df_ref = pd.read_csv(ref_file, sep=r"\s+", skiprows=5, names=["Frequency", "Value"], engine="python")
@@ -75,7 +75,8 @@ x_log = np.logspace(np.log10(x.min()), np.log10(x.max()), 1000)
 
 spline = UnivariateSpline(np.log10(x), y, s=100)
 y_smooth = spline(np.log10(x_log))
-
+np.savetxt(f"Carton.txt", np.column_stack((x_log, y_smooth)),
+           header="x_log y_smooth", comments="", fmt="%.6f")
 plt.plot(x_log, y_smooth, 'k-', linewidth=2, label="Courbe de réponse du système")
 plt.xscale("log")
 plt.xlabel("Frequence (Hz)")
