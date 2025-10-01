@@ -3,16 +3,15 @@ import numpy as np
 import pandas as pd
 from scipy.signal import find_peaks
 
-liste_fichier = [ _ for _ in range(1, 8)]
-
+liste_fichier = [ _ for _ in range(1, 29)]
 for i in liste_fichier:
-    df = pd.read_csv("CNDs/3.1.2 rÉFLEXION/3.1.2 " + f"{i}.csv",comment='%', skip_blank_lines=True)
+    df = pd.read_csv("CNDs/3.1.3 Cavité/3.1.3 " + f"{i}.csv",comment='%', skip_blank_lines=True)
     df.rename(columns={df.columns[0]: 'Time', df.columns[1]: 'Voltage'}, inplace=True) 
-    df = df.iloc[000:750]
-    df_out = df.iloc[0:300]
-    df_reflechi = df.iloc[300:750]
+    df = df.iloc[000:600]
+    df_out = df.iloc[0:400]
+    df_reflechi = df.iloc[400:600]
     peaks_out, _ = find_peaks(df_out["Voltage"], height=-0.03)
-    peaks_reflechi, _ = find_peaks(df_reflechi["Voltage"], height=0.00005)
+    peaks_reflechi, _ = find_peaks(df_reflechi["Voltage"], height=-0.02)
 
     peak_times_out = df_out["Time"].iloc[peaks_out]
     peak_times_reflechi = df_reflechi["Time"].iloc[peaks_reflechi]
