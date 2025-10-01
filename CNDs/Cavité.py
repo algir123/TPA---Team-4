@@ -7,11 +7,12 @@ liste_fichier = [ _ for _ in range(1, 29)]
 for i in liste_fichier:
     df = pd.read_csv("CNDs/3.1.3 Cavité/3.1.3 " + f"{i}.csv",comment='%', skip_blank_lines=True)
     df.rename(columns={df.columns[0]: 'Time', df.columns[1]: 'Voltage'}, inplace=True) 
-    df = df.iloc[000:600]
-    df_out = df.iloc[0:400]
-    df_reflechi = df.iloc[400:600]
+    df = df.iloc[0:300]
+    df_out = df.iloc[0:250]
+    df_reflechi = df.iloc[250:300]
     peaks_out, _ = find_peaks(df_out["Voltage"], height=-0.03)
     peaks_reflechi, _ = find_peaks(df_reflechi["Voltage"], height=-0.02)
+    print(df_out)
 
     peak_times_out = df_out["Time"].iloc[peaks_out]
     peak_times_reflechi = df_reflechi["Time"].iloc[peaks_reflechi]
@@ -21,13 +22,24 @@ for i in liste_fichier:
 
 
     epaisseurs = []
+    if len(peaks_out) < len(peaks_reflechi):
+        peak_times_reflechi = peak_times_reflechi[:len(peak_times_out)]
+    print(peak_times_out)
+    print(peak_times_reflechi)
     for j, t_reflechi in enumerate(peak_times_reflechi.values):
-        epaisseurs.append((t_reflechi - peak_times_out.values[j]) * 6300*1000)
+            epaisseurs.append((t_reflechi - peak_times_out.values[j]) * 6300*1000)
+
+            
     epaisseur = np.mean(epaisseurs)/2
     std_epaisseur = np.std(epaisseurs)/2
 
     print("Épaisseur mesurée : ", epaisseur, '±', std_epaisseur, " mm")
     #Afficher les graphiques et leurs points:
     plt.plot(df["Time"]*1e6, df["Voltage"])
+    # Ligne verticale pour démarcation entre df_out et df_reflechi
+    time_sep = df["Time"].iloc[250] * 1e6
+    plt.axvline(x=time_sep, color='gray', linestyle='--', label='Séparation out/réfléchi')
+
+    #plt.axvline(df_out)
     plt.title(f"fichier {i}")
     plt.show()
