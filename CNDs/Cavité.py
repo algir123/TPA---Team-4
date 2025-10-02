@@ -24,8 +24,6 @@ for i in liste_fichier:
     epaisseurs = []
     if len(peaks_out) < len(peaks_reflechi):
         peak_times_reflechi = peak_times_reflechi[:len(peak_times_out)]
-    print(peak_times_out)
-    print(peak_times_reflechi)
     for j, t_reflechi in enumerate(peak_times_reflechi.values):
             epaisseurs.append((t_reflechi - peak_times_out.values[j]) * 6300*1000)
 

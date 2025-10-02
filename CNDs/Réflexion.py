@@ -8,9 +8,9 @@ liste_fichier = [ _ for _ in range(1, 8)]
 for i in liste_fichier:
     df = pd.read_csv("CNDs/3.1.2 rÉFLEXION/3.1.2 " + f"{i}.csv",comment='%', skip_blank_lines=True)
     df.rename(columns={df.columns[0]: 'Time', df.columns[1]: 'Voltage'}, inplace=True) 
-    df = df.iloc[000:800]
+    df = df.iloc[000:600]
     df_out = df.iloc[0:400]
-    df_reflechi = df.iloc[400:800]
+    df_reflechi = df.iloc[400:600]
     peaks_out, _ = find_peaks(df_out["Voltage"], height=-0.03)
     peaks_reflechi, _ = find_peaks(df_reflechi["Voltage"], height=0.00005)
 
@@ -22,8 +22,10 @@ for i in liste_fichier:
 
 
     epaisseurs = []
+    if len(peaks_out) < len(peaks_reflechi):
+        peak_times_reflechi = peak_times_reflechi[:len(peak_times_out)]
     for j, t_reflechi in enumerate(peak_times_reflechi.values):
-        epaisseurs.append((t_reflechi - peak_times_out.values[j]) * 6300*1000)
+            epaisseurs.append((t_reflechi - peak_times_out.values[j]) * 6300*1000)
     epaisseur = np.mean(epaisseurs)/2
     std_epaisseur = np.std(epaisseurs)/2
 
@@ -32,5 +34,8 @@ for i in liste_fichier:
     plt.plot(df["Time"]*1e6, df["Voltage"], "k")
     plt.xlabel(r"Temps ($\rm \mu$s)")
     plt.ylabel(r"Voltage (V)")
-    plt.xlim(-1, 10)
+    #plt.xlim(-1, 10)
+    time_sep = df["Time"].iloc[400] * 1e6
+    plt.axvline(x=time_sep, color='gray', linestyle='--', label='Séparation out/réfléchi')
+
     plt.show()
