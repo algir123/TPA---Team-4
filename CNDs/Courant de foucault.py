@@ -19,10 +19,11 @@ a, b = popt
 perr = np.sqrt(np.diag(pcov))
 
 plt.figure(figsize=(10, 6))
-plt.plot(x, f(np.array(x), *popt), 'k-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
+plt.plot(x, f(np.array(x), *popt), 'k-', label='fit: a=%5.6f, b=%5.6f' % tuple(popt))
 plt.plot(x, epaisseurs, 'ok', label='Données expérimentales')
-plt.xlabel("Changement de résistance (mV)")
+plt.xlabel(r"Changement de résistance (mV)")
 plt.ylabel("Épaisseur de la couche de plastique (mm)")
+plt.legend()
 
 plt.figure(figsize=(10, 6))
 for i in range(len(mesure_x)):
@@ -34,15 +35,45 @@ a, b = popt
 perr = np.sqrt(np.diag(pcov))
 plt.figure(figsize=(10, 6))
 print(perr)
-plt.plot(y, f(np.array(y), *popt), 'k-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))
-plt.plot(y, epaisseurs, 'ok', label='Données expérimentales')
-plt.xlabel("Changement de réactance  (mV)")
+plt.plot(y, f(np.array(y), *popt), 'k-', label='fit: a=%5.6f, b=%5.6f' % tuple(popt))
+plt.xlabel(r"Changement de réactance  (mV)")
 plt.ylabel("Épaisseur de la couche de plastique (mm)")
-
+plt.plot(y, epaisseurs, 'ok', label='Données expérimentales')
+plt.legend()
 
 plt.figure(figsize=(10, 6))
 for i in range(len(mesure_y)):
-    plt.plot(i, f(mesure_y[i],a,b), 'ko')
+    plt.plot(i, f(mesure_y[i],a,b), 'ko') 
+plt.xlabel("Distance sur la plaque métallique (cm)")
+plt.ylabel("Hauteur du revêtement (mm)")
+plt.legend()   
+
+#Changement d'impédance pour les couches minces de plastique
+
+z = np.sqrt(np.array(x)**2 + np.array(y)**2)
+popt, pcov = curve_fit(f, z, epaisseurs)
+a, b = popt
+perr = np.sqrt(np.diag(pcov))
+
+plt.figure(figsize=(10, 6))
+plt.plot(z, f(np.array(z), *popt), "k-", label="fit: a=%5.6f, b=%5.6f" % tuple(popt))
+plt.xlabel(r"Changement d'impédance (mV)")
+plt.ylabel("Épaisseur de la couche de plastique (mm)")
+plt.plot(z, epaisseurs, 'ok', label='Données expérimentales')
+plt.legend()
+
+
+mesure_z = np.sqrt(abs(np.array(mesure_x[:-1]) * np.array(mesure_y)))
+print(mesure_x[:-1])
+print(mesure_y)
+print(mesure_z)
+
+plt.figure(figsize=(10, 6))
+for i in range(len(mesure_z)):
+    plt.plot(i, f(mesure_z[i], a, b), "ko-")
+plt.xlabel("Distance sur la plaque métallique (cm)")
+plt.ylabel("Hauteur du revêtement (mm)")
+
 plt.show()
 
 

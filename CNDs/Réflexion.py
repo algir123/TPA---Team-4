@@ -12,7 +12,7 @@ for i in liste_fichier:
     df_out = df.iloc[0:400]
     df_reflechi = df.iloc[400:600]
     peaks_out, _ = find_peaks(df_out["Voltage"], height=-0.03)
-    peaks_reflechi, _ = find_peaks(df_reflechi["Voltage"], height=0.00005)
+    peaks_reflechi, _ = find_peaks(df_reflechi["Voltage"], height=-0.02)
 
     peak_times_out = df_out["Time"].iloc[peaks_out]
     peak_times_reflechi = df_reflechi["Time"].iloc[peaks_reflechi]
