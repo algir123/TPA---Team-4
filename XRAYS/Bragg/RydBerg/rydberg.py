@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import savgol_filter, find_peaks
+
 
 n_lambda = np.array([
   2.0, 37.4, 38.4, 39.3, 40.3, 41.3, 42.3, 43.3, 44.3, 45.2,
@@ -61,7 +63,7 @@ R6 = np.array([
 # T1 à T6 (%)
 T1 = np.array([
   50.0, 0.0, 13.6, 15.5, 18.8, 12.1, 10.4, 11.5, 8.1, 11.1,
-  8.0, 9.5, 22.8, 42.5, 51.2, 60.8, 52.0, 57.4, 59.9, 48.5,
+  8.0, 9.5, 22.8, 42.5, 60.8, 58, 52.0, 57.4, 57.9, 48.5,
   40.6, 47.0, 46.1, 42.9, 44.4, 38.1, 36.4, 35.4, 39.8, 32.1,
   32.1, 29.2, 30.1, 23.9, 23.6, 27.0, 26.6, 23.8, 22.7
 ])
@@ -81,8 +83,8 @@ T3 = np.array([
 ])
 
 T4 = np.array([
-  20.0, 5.3, 1.7, 0.6, 1.5, 0.3, 0.9, 1.9, 6.2, 10.9,
-  12.1, 9.6, 11.3, 7.5, 8.3, 6.0, 5.6, 4.7, 3.4, 3.4,
+  20.0, 5.3, 1.7, 0.6, 1.5, 0.3, 0.9, 1.9, 6.2, 12.1,
+  10.9, 9.6, 11.3, 7.5, 8.3, 6.0, 5.6, 4.7, 3.4, 3.4,
   3.8, 2.4, 2.5, 2.4, 1.9, 1.1, 1.7, 0.8, 0.5, 0.8,
   0.6, 0.4, 0.0, 0.5, 0.4, 0.1, 0.2, 0.2, 0.0
 ])
@@ -104,25 +106,30 @@ T6 = np.array([
 dataR = {"ref": R0 , "Ag": R1, "Zr": R2,"Mo": R3, "In": R4, "Cu": R5, "Fe": R6}
 dataT = {"Ag": T1, "Zr": T2,"Mo": T3, "In": T4, "Cu": T5, "Fe": T6}
 
-for i, j in dataR.items():
-    plt.plot(n_lambda, j, label = i)
+'''for i, j in dataR.items():
+    if i == "ref":
+        plt.plot(n_lambda, j, label=i, color='black')  # ref in black
+    else:
+        plt.plot(n_lambda, j, label=i)'''
 
 plt.grid(alpha=0.3)
 plt.xlim(37.4, 73.6)
 plt.ylabel("Taux de comptage [1/s]")
 plt.xlabel(r"$n\lambda / pm$")
 plt.legend()
-
-plt.show()
-
+plt.close('all')
+plt.figure(figsize=(8, 5))
 
 for i, j in dataT.items():
-    plt.plot(n_lambda, j, label = i)
+    y_smooth = savgol_filter(j, window_length=10, polyorder=5)  # ajuste les valeurs
+    peaks, _ = find_peaks(j, prominence = 0.7)
+    print(f"{i} peaks at: {n_lambda[peaks]} with values {j[peaks]}")
+    plt.plot(n_lambda, y_smooth, label=i)
 
 plt.grid(alpha=0.3)
 plt.xlim(37.4, 73.6)
 plt.ylabel("Transmission [%]")
+plt.ylim(0, 80)
 plt.xlabel(r"$n\lambda / pm$")
 plt.legend()
-
 plt.show()
