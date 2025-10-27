@@ -1,0 +1,1 @@
+ax.set_ylabel(r"$\log(R)$")

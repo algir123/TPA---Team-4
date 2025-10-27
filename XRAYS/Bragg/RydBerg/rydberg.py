@@ -101,11 +101,11 @@ T6 = np.array([
   0.0, 0.2, 0.9, 0.2, 0.0, 0.1, 0.1, 0.1, 0.0
 ])
 
-dataR = {"ref": R0 , "Ag": R1, "Zr": R2,"Mo": R3, "In": R4, "Cu": R5, "Fe": R6}
-dataT = {"Ag": T1, "Zr": T2,"Mo": T3, "In": T4, "Cu": T5, "Fe": T6}
+dataR = {"ref": [R0, "ko-"] , "Ag": [R1, "kd-"], "Zr": [R2, "kv-"],"Mo": [R3, "ks-"], "In": [R4, "kx-"]}
+dataT = {"Ag": [T1, "kd-"], "Zr": [T2, "kv-"],"Mo": [T3, "ks-"], "In": [T4, "kx-"]}
 
 for i, j in dataR.items():
-    plt.plot(n_lambda, j, label = i)
+    plt.plot(n_lambda, j[0], j[1], label = i,)
 
 plt.grid(alpha=0.3)
 plt.xlim(37.4, 73.6)
@@ -117,7 +117,7 @@ plt.show()
 
 
 for i, j in dataT.items():
-    plt.plot(n_lambda, j, label = i)
+    plt.plot(n_lambda, j[0], j[1], label = i)
 
 plt.grid(alpha=0.3)
 plt.xlim(37.4, 73.6)
